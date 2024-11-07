@@ -29,7 +29,6 @@ public class HospitalManagementSystem extends Application {
 
     String[] patientUsernames = new String[100];
     String[] patientPasswords = new String[100];
-    private String fullName, age, dob, bloodGroup, gender, state, city, address, zipCode, mobile, email;
     String[] doctorUsernames = new String[100];
     String[] doctorPasswords = new String[100];
     String[] doctorSpecializations = new String[100];
@@ -292,6 +291,7 @@ public class HospitalManagementSystem extends Application {
     }
 
     // Book Appointment with time slot management
+    // Updated showBookAppointment method
     private void showBookAppointment(Stage primaryStage) {
         VBox layout = new VBox(15);
         layout.setAlignment(Pos.CENTER);
@@ -330,6 +330,7 @@ public class HospitalManagementSystem extends Application {
         Button backButton = new Button("Back");
 
         // Confirmation step upon clicking Submit
+        // Modify the submitButton action in the showBookAppointment method
         submitButton.setOnAction(e -> {
             if (doctorDropdown.getValue() != null && datePicker.getValue() != null && timeDropdown.getValue() != null && !symptomsField.getText().isEmpty()) {
                 // Capture appointment details
@@ -338,32 +339,26 @@ public class HospitalManagementSystem extends Application {
                 String selectedTime = timeDropdown.getValue();
                 String symptoms = symptomsField.getText();
 
-                // Now the patient details are globally available
-                String summary = "Patient Details:\n"
-                        + "Full Name: " + fullName + "\n"
-                        + "Age: " + age + "\n"
-                        + "Date of Birth: " + dob + "\n"
-                        + "Blood Group: " + bloodGroup + "\n"
-                        + "Gender: " + gender + "\n"
-                        + "State: " + state + "\n"
-                        + "City: " + city + "\n"
-                        + "Address: " + address + "\n"
-                        + "ZIPCODE: " + zipCode + "\n"
-                        + "Mobile: " + mobile + "\n"
-                        + "Email: " + email + "\n\n"
-                        + "Appointment Details:\n"
-                        + "Doctor: " + selectedDoctor + "\n"
-                        + "Date: " + selectedDate + "\n"
-                        + "Time: " + selectedTime + "\n"
-                        + "Symptoms: " + symptoms;
+                // Gather patient details from the patient details page (assuming they're stored as instance variables)
+                String fullName = fullNameField.getText(); // These fields should be accessible
+                String age = ageField.getText();
+                String dob = dobPicker.getValue() != null ? dobPicker.getValue().toString() : "";
+                String bloodGroup = bloodGroupDropdown.getValue();
+                String gender = genderDropdown.getValue();
+                String state = stateDropdown.getValue();
+                String city = cityField.getText();
+                String address = addressField.getText();
+                String zipCode = zipCodeField.getText();
+                String mobile = mobileField.getText();
+                String email = emailField.getText();
 
-                // Show the confirmation with both patient and appointment details
+                // Show confirmation dialog
                 showAppointmentConfirmation(primaryStage, selectedDoctor, selectedDate, selectedTime, symptoms, fullName, age, dob, bloodGroup, gender, state, city, address, zipCode, mobile, email);
             } else {
                 Alert alert = new Alert(Alert.AlertType.ERROR, "Please fill all fields");
                 alert.show();
             }
-        });
+        }); // Ensure this closing bracket is at the correct level
 
         backButton.setOnAction(e -> showPatientDashboard(primaryStage));
 
@@ -439,31 +434,18 @@ public class HospitalManagementSystem extends Application {
         Button backButton = new Button("Back");
 
         saveButton.setOnAction(e -> {
-            // Save patient details into global variables
-            fullName = fullNameField.getText();
-            age = ageField.getText();
-            dob = dobPicker.getValue() != null ? dobPicker.getValue().toString() : "";
-            bloodGroup = bloodGroupDropdown.getValue();
-            gender = genderDropdown.getValue();
-            state = stateDropdown.getValue();
-            city = cityField.getText();
-            address = addressField.getText();
-            zipCode = zipCodeField.getText();
-            mobile = mobileField.getText();
-            email = emailField.getText();
-
             // Create a summary of the entered details
-            String summary = "Full Name: " + fullName
-                    + "\nAge: " + age
-                    + "\nDate of Birth: " + dob
-                    + "\nBlood Group: " + bloodGroup
-                    + "\nGender: " + gender
-                    + "\nState: " + state
-                    + "\nCity: " + city
-                    + "\nAddress: " + address
-                    + "\nZIPCODE: " + zipCode
-                    + "\nMobile Number: " + mobile
-                    + "\nEmail Address: " + email;
+            String summary = "Full Name: " + fullNameField.getText()
+                    + "\nAge: " + ageField.getText()
+                    + "\nDate of Birth: " + (dobPicker.getValue() != null ? dobPicker.getValue() : "Not specified")
+                    + "\nBlood Group: " + (bloodGroupDropdown.getValue() != null ? bloodGroupDropdown.getValue() : "Not specified")
+                    + "\nGender: " + (genderDropdown.getValue() != null ? genderDropdown.getValue() : "Not specified")
+                    + "\nState: " + (stateDropdown.getValue() != null ? stateDropdown.getValue() : "Not specified")
+                    + "\nCity: " + cityField.getText()
+                    + "\nAddress: " + addressField.getText()
+                    + "\nZIPCODE: " + zipCodeField.getText()
+                    + "\nMobile Number: " + mobileField.getText()
+                    + "\nEmail Address: " + emailField.getText();
 
             // Show confirmation dialog with the summary
             Alert confirmationDialog = new Alert(Alert.AlertType.CONFIRMATION);
@@ -478,7 +460,8 @@ public class HospitalManagementSystem extends Application {
 
             confirmationDialog.showAndWait().ifPresent(response -> {
                 if (response == confirmButton) {
-                    // Details are saved
+                    // Here you can handle saving the patient details, e.g., storing in a database or file
+                    // For now, we can just show a confirmation message
                     Alert alert = new Alert(Alert.AlertType.INFORMATION, "Details saved successfully!");
                     alert.show();
                 }
@@ -510,16 +493,15 @@ public class HospitalManagementSystem extends Application {
         primaryStage.setScene(scene);
     }
 
-    private void showAppointmentConfirmation(Stage primaryStage, String doctor, String date, String time, String symptoms,
-            String fullName, String age, String dob, String bloodGroup, String gender,
-            String state, String city, String address, String zipCode, String mobile, String email) {
-        // Prepare a summary of patient and appointment details
-        String confirmationMessage = "Appointment Details:\n"
-                + "Doctor: " + doctor + "\n"
-                + "Date: " + date + "\n"
-                + "Time: " + time + "\n"
-                + "Symptoms: " + symptoms + "\n\n"
-                + "Patient Details:\n"
+// New method for appointment confirmation dialog
+// New method for appointment confirmation dialog
+    private void showAppointmentConfirmation(Stage primaryStage, String doctor, String date, String time, String symptoms, String fullName, String age, String dob, String bloodGroup, String gender, String state, String city, String address, String zipCode, String mobile, String email) {
+        Alert confirmationDialog = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmationDialog.setTitle("Confirm Appointment");
+        confirmationDialog.setHeaderText("Appointment Details");
+
+        // Summary text for patient and appointment details
+        String summaryText = "Patient Details:\n"
                 + "Full Name: " + fullName + "\n"
                 + "Age: " + age + "\n"
                 + "Date of Birth: " + dob + "\n"
@@ -530,13 +512,33 @@ public class HospitalManagementSystem extends Application {
                 + "Address: " + address + "\n"
                 + "ZIPCODE: " + zipCode + "\n"
                 + "Mobile: " + mobile + "\n"
-                + "Email: " + email;
+                + "Email: " + email + "\n\n"
+                + "Appointment Details:\n"
+                + "Doctor: " + doctor + "\n"
+                + "Date: " + date + "\n"
+                + "Time: " + time + "\n"
+                + "Symptoms: " + symptoms;
 
-        // Show confirmation dialog
-        Alert confirmationDialog = new Alert(Alert.AlertType.INFORMATION, confirmationMessage);
-        confirmationDialog.setTitle("Appointment Confirmation");
-        confirmationDialog.setHeaderText("Your Appointment has been booked successfully!");
-        confirmationDialog.showAndWait();
+        confirmationDialog.setContentText(summaryText);
+
+        ButtonType confirmButton = new ButtonType("Confirm", ButtonBar.ButtonData.OK_DONE);
+        ButtonType editButton = new ButtonType("Edit", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+        confirmationDialog.getButtonTypes().setAll(confirmButton, editButton);
+
+        confirmationDialog.showAndWait().ifPresent(response -> {
+            if (response == confirmButton) {
+                // Save appointment and mark time slot as booked
+                appointments.add(new String[]{currentPatientUsername, doctor, date, time, symptoms});
+                doctorTimeSlots.get(doctor).add(time);
+
+                Alert successAlert = new Alert(Alert.AlertType.INFORMATION, "Appointment booked successfully!");
+                successAlert.show();
+                showPatientDashboard(primaryStage);
+            } else if (response == editButton) {
+                showBookAppointment(primaryStage);  // Go back to appointment form for editing
+            }
+        });
     }
 
     // Show Doctor Appointments
