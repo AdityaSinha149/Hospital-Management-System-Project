@@ -291,7 +291,6 @@ public class HospitalManagementSystem extends Application {
     }
 
     // Book Appointment with time slot management
-    // Updated showBookAppointment method
     private void showBookAppointment(Stage primaryStage) {
         VBox layout = new VBox(15);
         layout.setAlignment(Pos.CENTER);
